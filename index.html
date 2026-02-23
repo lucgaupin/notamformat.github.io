@@ -1,7 +1,53 @@
 <!DOCTYPE html>
 <html>
-  <body>
-    <h1>My First Heading</h1>
-    <p>My first paragraph.</p>
-  </body>
+<head>
+  <title>Text Column Splitter</title>
+</head>
+<body>
+  <h2>Paste Your Text</h2>
+  <textarea id="inputText" rows="10" cols="80"></textarea><br><br>
+  <button onclick="processText()">Split into Columns</button>
+
+  <div id="output"></div>
+
+  <script>
+    function splitIntoColumns(text, maxChars = 4500) {
+      const words = text.split(/\s+/);
+      const columns = [];
+      let currentColumn = "";
+
+      for (const word of words) {
+        if ((currentColumn + " " + word).trim().length <= maxChars) {
+          currentColumn = (currentColumn + " " + word).trim();
+        } else {
+          columns.push(currentColumn);
+          currentColumn = word;
+        }
+      }
+
+      if (currentColumn) {
+        columns.push(currentColumn);
+      }
+
+      return columns;
+    }
+
+    function processText() {
+      const text = document.getElementById("inputText").value;
+      const columns = splitIntoColumns(text);
+      const outputDiv = document.getElementById("output");
+
+      outputDiv.innerHTML = "";
+
+      columns.forEach((col, index) => {
+        const columnDiv = document.createElement("div");
+        columnDiv.style.border = "1px solid black";
+        columnDiv.style.padding = "10px";
+        columnDiv.style.margin = "10px 0";
+        columnDiv.innerHTML = `<h3>Column ${index + 1} (${col.length} chars)</h3><p>${col}</p>`;
+        outputDiv.appendChild(columnDiv);
+      });
+    }
+  </script>
+</body>
 </html>
