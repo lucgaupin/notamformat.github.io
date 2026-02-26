@@ -11,43 +11,76 @@
   <div id="output"></div>
 
   <script>
+    // function splitIntoColumns(text, maxChars = 3800) {
+    //   const words = text.split(/\s+/);
+    //   const columns = [];
+    //   let currentColumn = "";
+
+    //   for (const word of words) {
+    //     if ((currentColumn + " " + word).trim().length <= maxChars) {
+    //       currentColumn = (currentColumn + " " + word).trim();
+    //     } else {
+    //       columns.push(currentColumn);
+    //       currentColumn = word;
+    //     }
+    //   }
+
+    //   if (currentColumn) {
+    //     columns.push(currentColumn);
+    //   }
+
+    //   return columns;
+    // }
+
+    // function processText() {
+    //   const text = document.getElementById("inputText").value;
+    //   const columns = splitIntoColumns(text);
+    //   const outputDiv = document.getElementById("output");
+
+    //   outputDiv.innerHTML = "";
+
+    //   columns.forEach((col, index) => {
+    //     const columnDiv = document.createElement("div");
+    //     columnDiv.style.border = "1px solid black";
+    //     columnDiv.style.padding = "10px";
+    //     columnDiv.style.margin = "10px 0";
+    //     columnDiv.innerHTML = `<h3>Column ${index + 1} (${col.length} chars)</h3><p>${col}</p>`;
+    //     outputDiv.appendChild(columnDiv);
+    //   });
+    // }
     function splitIntoColumns(text, maxChars = 3800) {
-      const words = text.split(/\s+/);
+  // Match sentences ending in a period (including the period)
+      const sentences = text.match(/[^.]+?\.(\s|$)/g) || [];
+
       const columns = [];
       let currentColumn = "";
 
-      for (const word of words) {
-        if ((currentColumn + " " + word).trim().length <= maxChars) {
-          currentColumn = (currentColumn + " " + word).trim();
+      for (const sentence of sentences) {
+        if ((currentColumn + sentence).length <= maxChars) {
+          currentColumn += sentence;
         } else {
-          columns.push(currentColumn);
-          currentColumn = word;
+          columns.push(currentColumn.trim());
+          currentColumn = sentence;
         }
       }
 
-      if (currentColumn) {
-        columns.push(currentColumn);
+      // Add remaining text
+      if (currentColumn.trim().length > 0) {
+        columns.push(currentColumn.trim());
       }
 
       return columns;
     }
 
-    function processText() {
-      const text = document.getElementById("inputText").value;
-      const columns = splitIntoColumns(text);
-      const outputDiv = document.getElementById("output");
 
-      outputDiv.innerHTML = "";
+    // Example usage:
+    const userText = prompt("Paste your text below:");
+    const columns = splitIntoColumns(userText);
 
-      columns.forEach((col, index) => {
-        const columnDiv = document.createElement("div");
-        columnDiv.style.border = "1px solid black";
-        columnDiv.style.padding = "10px";
-        columnDiv.style.margin = "10px 0";
-        columnDiv.innerHTML = `<h3>Column ${index + 1} (${col.length} chars)</h3><p>${col}</p>`;
-        outputDiv.appendChild(columnDiv);
-      });
-    }
+    columns.forEach((col, index) => {
+      console.log(`\n--- Column ${index + 1} (${col.length} characters) ---\n`);
+      console.log(col);
+    });
   </script>
 </body>
 </html>
