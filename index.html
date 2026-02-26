@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
   <title>NOTAM Formatter</title>
@@ -82,5 +82,110 @@
       console.log(col);
     });
   </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sentence-Based Column Splitter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 200px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .columns-container {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .column {
+      flex: 1;
+      min-width: 300px;
+      max-width: 400px;
+      border: 1px solid #ccc;
+      padding: 15px;
+      background: #f9f9f9;
+      white-space: pre-wrap;
+    }
+
+    .column h3 {
+      margin-top: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Text Column Splitter (Max 3800 Characters Per Column)</h2>
+
+  <textarea id="inputText" placeholder="Paste your text here..."></textarea>
+  <br>
+  <button onclick="processText()">Split Into Columns</button>
+
+  <div id="output" class="columns-container"></div>
+
+  <script>
+    function splitIntoColumns(text, maxChars = 3800) {
+      // Split text into sentences ending with a period
+      const sentences = text.match(/[^.]+?\.(\s|$)/g) || [];
+
+      const columns = [];
+      let currentColumn = "";
+
+      for (let sentence of sentences) {
+        if ((currentColumn + sentence).length <= maxChars) {
+          currentColumn += sentence;
+        } else {
+          columns.push(currentColumn.trim());
+          currentColumn = sentence;
+        }
+      }
+
+      if (currentColumn.trim().length > 0) {
+        columns.push(currentColumn.trim());
+      }
+
+      return columns;
+    }
+
+    function processText() {
+      const text = document.getElementById("inputText").value.trim();
+      const output = document.getElementById("output");
+      output.innerHTML = "";
+
+      if (!text) {
+        alert("Please enter some text.");
+        return;
+      }
+
+      const columns = splitIntoColumns(text);
+
+      columns.forEach((col, index) => {
+        const columnDiv = document.createElement("div");
+        columnDiv.className = "column";
+        columnDiv.innerHTML = `
+          <h3>Column ${index + 1} (${col.length} chars)</h3>
+          ${col}
+        `;
+        output.appendChild(columnDiv);
+      });
+    }
+  </script>
+
 </body>
 </html>
